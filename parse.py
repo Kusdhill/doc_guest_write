@@ -19,11 +19,13 @@ def check_extension(filename):
 	if extension!=good_extension:
 		sys.exit("must pass in .docx files")
 
+
 # verifies that file exists
 # if it does not, an error is thrown
 def check_existence(filename):
 	if not os.path.isfile(filename):
 		sys.exit("file must exist")
+
 
 # parses file for names of guests
 def find_names(doc_object):
@@ -34,8 +36,11 @@ def find_names(doc_object):
 	# Newline (empty paragraph) preceeds every name
 	# Line succeeding every name begins with "Affiliation"
 
-	for pars in doc_object.paragraphs:
-		print pars.text +"\\n"
+	for para in doc_object.paragraphs:
+		print para.text +"\\n"
+
+	print("\n"+doc_object.paragraphs[1].runs[1].text)
+
 
 def main():
 	print("checking command line arguments")
@@ -51,11 +56,6 @@ def main():
 
 	doc = docx.Document(filename)
 	find_names(doc)
-
-
-	
-
-
 
 
 if __name__ == '__main__':
