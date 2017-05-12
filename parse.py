@@ -25,7 +25,17 @@ def check_existence(filename):
 	if not os.path.isfile(filename):
 		sys.exit("file must exist")
 
+# parses file for names of guests
+def find_names(doc_object):
 
+	# How to identify a name?
+	# Every name is in bold
+	# Most names are followed by a comma, but not all
+	# Newline (empty paragraph) preceeds every name
+	# Line succeeding every name begins with "Affiliation"
+
+	for pars in doc_object.paragraphs:
+		print pars.text +"\\n"
 
 def main():
 	print("checking command line arguments")
@@ -40,10 +50,12 @@ def main():
 	filename = sys.argv[1]
 
 	doc = docx.Document(filename)
+	find_names(doc)
 
 
-	for pars in doc.paragraphs:
-		print pars.text +"\\n"
+	
+
+
 
 
 if __name__ == '__main__':
