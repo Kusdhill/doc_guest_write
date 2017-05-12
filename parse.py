@@ -19,6 +19,8 @@ def check_extension(filename):
 	if extension!=good_extension:
 		sys.exit("must pass in .docx files")
 
+# verifies that file exists
+# if it does not, an error is thrown
 def check_existence(filename):
 	if not os.path.isfile(filename):
 		sys.exit("file must exist")
@@ -35,6 +37,13 @@ def main():
 		print("verifying existence")
 		check_existence(sys.argv[1])
 
+	filename = sys.argv[1]
+
+	doc = docx.Document(filename)
+
+
+	for pars in doc.paragraphs:
+		print pars.text +"\\n"
 
 
 if __name__ == '__main__':
