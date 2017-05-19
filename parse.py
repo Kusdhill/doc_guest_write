@@ -1,6 +1,7 @@
 import docx
 import sys
 import os
+import re
 
 # verifies that a given filename has .docx extension
 # if it does not, an error is thrown
@@ -36,16 +37,33 @@ def find_names(doc_object):
 	# Newline (empty paragraph) preceeds every name
 	# Line succeeding every name begins with "Affiliation"
 
-	for para in doc_object.paragraphs:
-		print para.text +"\\n"
 
-	print("\n"+doc_object.paragraphs[1].runs[1].text)
+	##
+	##for para in doc_object.paragraphs:
+	##	print para.text +"\\n"
+
+	#print("\n"+doc_object.paragraphs[1].runs[1].text)
+
+
+	full_text = ""
+	for para in doc_object.paragraphs:
+		full_text += para.text
+
+
+	match_object = re.match("([A-Z]+[a-z]+)+[\s]",full_text)
+	print(match_object.group(0))
+
+
+	#for i in range(0, len(doc_object.paragraphs)):
+	#	for j in range(0, len(doc_object.paragraphs[i].runs)):
+	#		print("i="+str(i)+" j="+str(j))
+	#		print(doc_object.paragraphs[i].runs[j].text)
 
 
 def main():
 	print("checking command line arguments")
 	if len(sys.argv)!=2:
-		sys.exit("usage: python compare.py filename.docx")
+		sys.exit("usage: python parse.py filename.docx")
 	else:
 		print("verifying file extension")
 		check_extension(sys.argv[1])
