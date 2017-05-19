@@ -49,15 +49,16 @@ def find_names(doc_object):
 	for para in doc_object.paragraphs:
 		full_text += para.text
 
+	names = []
+	for i in range(0, len(doc_object.paragraphs)):
+		if(len(doc_object.paragraphs[i].runs)>=2):
+			run = doc_object.paragraphs[i].runs[1]
+			if(run.bold):
+				names.append(run.text)
 
-	match_object = re.match("([A-Z]+[a-z]+)+[\s]",full_text)
-	print(match_object.group(0))
+	print(names)
 
 
-	#for i in range(0, len(doc_object.paragraphs)):
-	#	for j in range(0, len(doc_object.paragraphs[i].runs)):
-	#		print("i="+str(i)+" j="+str(j))
-	#		print(doc_object.paragraphs[i].runs[j].text)
 
 
 def main():
