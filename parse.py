@@ -52,16 +52,17 @@ def find_names(doc_object):
 def name_verified(text):
 	print("IN NAME_VERIFIED")
 	print(text)
-
 	
-
+	if(not (" " in text)):
+		return False
 	if(text=="" or len(text)<2):
 		return False
 	else:
 		first_char = text[0]
-
-
+		last_char = text[-1]
 	if(not first_char.isupper()):
+		return False
+	if(not (last_char.isalpha() or last_char!="," or last_char!=":" or last_char!=" ")):
 		return False
 	else:
 		return True
@@ -71,8 +72,9 @@ def name_verified(text):
 def clean_name(text):
 	print("cleaning "+text+"\n")
 	last_char = text[-1]
+	print(last_char.isalpha())
 	if(not last_char.isalpha()):
-		return text[:-1]
+		return text[0:-2]
 	else:
 		return text
 
