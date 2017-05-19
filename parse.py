@@ -2,6 +2,7 @@ import docx
 import sys
 import os
 import re
+import shutil
 
 
 # verifies that a given filename has .docx extension
@@ -89,10 +90,17 @@ def copy_text(names, doc):
 
 # For each name, create a file, dump the text, and save the file
 def dump_files(names, copied):
+
+	path = "./created_files/"
+
+	if os.path.exists(path):
+		shutil.rmtree(path)
+
+	os.makedirs(path)
 	for i in range(0, len(names)):
 		save_doc = docx.Document()
 		save_doc.add_paragraph(copied[names[i]])
-		save_doc.save(names[i]+".docx")
+		save_doc.save(path+names[i]+".docx")
 
 
 def main():
