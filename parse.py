@@ -44,8 +44,9 @@ def find_names(doc_object):
 					print("cleaned name = "+cleaned_name)
 					names.append(cleaned_name)
 
-	#print(names)
+	print(names)
 	return names
+
 
 # Verify that identified bold string is actually a name
 def name_verified(text):
@@ -54,18 +55,17 @@ def name_verified(text):
 
 	
 
-	if(text==""):
+	if(text=="" or len(text)<2):
 		return False
 	else:
 		first_char = text[0]
 
-	
+
 	if(not first_char.isupper()):
-		return False
-	if(len(text) < 2):
 		return False
 	else:
 		return True
+
 
 # Cleans name of unnecessary bolded characters
 def clean_name(text):
@@ -85,7 +85,6 @@ def copy_text(names, doc):
 
 	j = 0
 	want_str = ""
-	want = []
 	for i in range(0,len(doc.paragraphs)):
 		line = doc.paragraphs[i]
 		text = line.text
@@ -101,10 +100,9 @@ def copy_text(names, doc):
 
 		if names[j] in text and bold:
 			#print(j)
-			#print("found name! "+names[j])
+			print("found name! "+names[j])
 			
 			if(j!=0):
-				want.append(want_str)
 				name_with_text[names[j-1]] = want_str
 				#print("cleared want_str")
 				want_str = ""
@@ -112,12 +110,14 @@ def copy_text(names, doc):
 				j+=1
 			
 		if j==len(names)-1 and i==len(doc.paragraphs)-1:
-			want.append(want_str)
 			name_with_text[names[j]] = want_str
 			want_str = ""
 
 		want_str += text
 		#print("added to "+want_str+"\n")
+
+	for name in name_with_text:
+		print name
 
 	return name_with_text
 		
