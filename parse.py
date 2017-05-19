@@ -89,9 +89,9 @@ def copy_text(names, doc):
 		
 
 # For each name, create a file, dump the text, and save the file
-def dump_files(names, copied):
+def dump_files(filename, names, copied):
 
-	path = "./created_files/"
+	path = "./"+filename[0:-5]+"_created_files/"
 
 	if os.path.exists(path):
 		shutil.rmtree(path)
@@ -121,7 +121,7 @@ def main():
 	print("copying text")
 	names_with_text = copy_text(names, doc)
 	print("creating files")
-	dump_files(names, names_with_text)
+	dump_files(filename, names, names_with_text)
 	
 
 
