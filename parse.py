@@ -37,17 +37,14 @@ def find_names(doc_object):
 			if(run.bold):
 				names.append(run.text)
 
-	print(names)
+	#print(names)
 	return names
 
 # put name and text associated with name into dictionary
 def copy_text(names, doc):
 	name_with_text = {}
 
-	for name in names:
-		name_with_text[name] = "my text"
-
-	print(name_with_text)
+	#print(name_with_text)
 
 	j = 0
 	want_str = ""
@@ -66,35 +63,26 @@ def copy_text(names, doc):
 				bold = False
 
 		if names[j] in text and bold:
-			print(j)
-			print("found name! "+names[j])
+			#print(j)
+			#print("found name! "+names[j])
 			
 			if(j!=0):
 				want.append(want_str)
-				print("cleared want_str")
+				name_with_text[names[j-1]] = want_str
+				#print("cleared want_str")
 				want_str = ""
 			if(j!=len(names)-1):
 				j+=1
 			
 		if j==len(names)-1 and i==len(doc.paragraphs)-1:
 			want.append(want_str)
+			name_with_text[names[j]] = want_str
 			want_str = ""
 
 		want_str += text
-		print("added to "+want_str+"\n")
+		#print("added to "+want_str+"\n")
 
-
-
-		
-
-	for thing in want:
-		print("\n new thing!!!!")
-		print(thing)
-
-
-
-
-
+	return name_with_text
 		
 
 def main():
@@ -113,9 +101,9 @@ def main():
 	print("finding names")
 	names = find_names(doc)
 	print("copying text")
-	copy_text(names, doc)
-	# copy contents between names
-	# open files
+	text = copy_text(names, doc)
+	print("creating files")
+	
 
 
 if __name__ == '__main__':
