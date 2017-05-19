@@ -49,21 +49,15 @@ def copy_text(names, doc):
 
 	print(name_with_text)
 
-
-	# if there are two newlines in a row, start a new index in name_with_text
-
-
-	# everytime you hit a new name, start a new para
-
 	j = 0
+	want_str = ""
+	want = []
 	for i in range(0,len(doc.paragraphs)):
 		line = doc.paragraphs[i]
 		text = line.text
 		bold = False
 
-
-		print(text)
-
+		#print(text)
 
 		if(len(line.runs)>=2):
 			if(line.runs[1].bold):
@@ -72,9 +66,31 @@ def copy_text(names, doc):
 				bold = False
 
 		if names[j] in text and bold:
-			print("found name!")
-			if(j<len(names)-1):
+			print(j)
+			print("found name! "+names[j])
+			
+			if(j!=0):
+				want.append(want_str)
+				print("cleared want_str")
+				want_str = ""
+			if(j!=len(names)-1):
 				j+=1
+			
+		if j==len(names)-1 and i==len(doc.paragraphs)-1:
+			want.append(want_str)
+			want_str = ""
+
+		want_str += text
+		print("added to "+want_str+"\n")
+
+
+
+		
+
+	for thing in want:
+		print("\n new thing!!!!")
+		print(thing)
+
 
 
 
