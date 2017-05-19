@@ -34,13 +34,47 @@ def check_existence(filename):
 def find_names(doc_object):
 	names = []
 	for i in range(0, len(doc_object.paragraphs)):
-		if(len(doc_object.paragraphs[i].runs)>=2):
-			run = doc_object.paragraphs[i].runs[1]
+		print(doc_object.paragraphs[i].text)
+		print(len(doc_object.paragraphs[i].runs))
+
+		for run in doc_object.paragraphs[i].runs:
 			if(run.bold):
-				names.append(run.text)
+				if(name_verified(run.text)):
+					cleaned_name = clean_name(run.text)
+					print("cleaned name = "+cleaned_name)
+					names.append(cleaned_name)
 
 	#print(names)
 	return names
+
+# Verify that identified bold string is actually a name
+def name_verified(text):
+	print("IN NAME_VERIFIED")
+	print(text)
+
+	
+
+	if(text==""):
+		return False
+	else:
+		first_char = text[0]
+
+	
+	if(not first_char.isupper()):
+		return False
+	if(len(text) < 2):
+		return False
+	else:
+		return True
+
+# Cleans name of unnecessary bolded characters
+def clean_name(text):
+	print("cleaning "+text+"\n")
+	last_char = text[-1]
+	if(not last_char.isalpha()):
+		return text[:-1]
+	else:
+		return text
 
 
 # put name and text associated with name into dictionary
