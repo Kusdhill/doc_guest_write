@@ -3,6 +3,7 @@ import sys
 import os
 import re
 
+
 # verifies that a given filename has .docx extension
 # if it does not, an error is thrown
 def check_extension(filename):
@@ -39,6 +40,7 @@ def find_names(doc_object):
 
 	#print(names)
 	return names
+
 
 # put name and text associated with name into dictionary
 def copy_text(names, doc):
@@ -85,6 +87,14 @@ def copy_text(names, doc):
 	return name_with_text
 		
 
+# For each name, create a file, dump the text, and save the file
+def dump_files(names, copied):
+	for i in range(0, len(names)):
+		save_doc = docx.Document()
+		save_doc.add_paragraph(copied[names[i]])
+		save_doc.save(names[i]+".docx")
+
+
 def main():
 	print("checking command line arguments")
 	if len(sys.argv)!=2:
@@ -101,8 +111,9 @@ def main():
 	print("finding names")
 	names = find_names(doc)
 	print("copying text")
-	text = copy_text(names, doc)
+	names_with_text = copy_text(names, doc)
 	print("creating files")
+	dump_files(names, names_with_text)
 	
 
 
