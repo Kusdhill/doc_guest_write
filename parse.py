@@ -34,24 +34,24 @@ def check_existence(filename):
 def find_names(doc_object):
 	names = []
 	for i in range(0, len(doc_object.paragraphs)):
-		print(doc_object.paragraphs[i].text)
-		print(len(doc_object.paragraphs[i].runs))
+		#print(doc_object.paragraphs[i].text)
+		#print(len(doc_object.paragraphs[i].runs))
 
 		for run in doc_object.paragraphs[i].runs:
 			if(run.bold):
 				if(verify_name(run.text)):
 					cleaned_name = clean_name(run.text)
-					print("cleaned name = "+cleaned_name)
+					#print("cleaned name = "+cleaned_name)
 					names.append(cleaned_name)
 
-	print(names)
+	#print(names)
 	return names
 
 
 # Verify that identified bold string is actually a name
 def verify_name(text):
-	print("IN VERIFY_NAME "+text)
-	print(text)
+	#print("IN VERIFY_NAME "+text)
+	#print(text)
 	
 	if(not (" " in text)):
 		return False
@@ -70,13 +70,13 @@ def verify_name(text):
 
 # Cleans name of unnecessary bolded characters
 def clean_name(text):
-	print("cleaning "+text+"\n")
+	#print("cleaning "+text+"\n")
 	last_char = text[-1]
-	print(last_char)
-	print(last_char.isalpha())
-	print(text[0:-1])
+	#print(last_char)
+	#print(last_char.isalpha())
+	#print(text[0:-1])
 	if(not last_char.isalpha()):
-		print("bad return?")
+		#print("bad return?")
 		return text[0:-1]
 	else:
 		return text
@@ -94,35 +94,52 @@ def copy_text(names, doc):
 		line = doc.paragraphs[i]
 		text = line.text
 		bold = False
+		next_name = False
+		new_lines = 0
 
-		#print(text)
+		print("doc = "+doc.paragraphs[i].text+"\n")
 
 		if(len(line.runs)>=2):
 			if(line.runs[1].bold):
 				bold = True
-			else:
-				bold = False
 
-		if names[j] in text and bold:
-			#print(j)
-			print("found name! "+names[j])
-			
-			if(j!=0):
-				name_with_text[names[j-1]] = want_str
-				#print("cleared want_str")
-				want_str = ""
-			if(j!=len(names)-1):
-				j+=1
-			
-		if j==len(names)-1 and i==len(doc.paragraphs)-1:
-			name_with_text[names[j]] = want_str
+		if(re.search('[a-zA-Z]',text)==None):
+			print("empty, clear")
 			want_str = ""
 
+		if names[j] in text and bold:
+			print("found name! "+names[j])
+
+			# take previous name followed by concantenated strings, put into dictionary. ex: {Kunal : my text}
+			if(j!=0):
+				print("\n"+names[j-1]+"\n")
+				name_with_text[names[j-1]] = want_str
+				print("cleared want_str")
+				want_str = ""
+
+			# if loop is at end of names[] and loop is at end of doc paragraphs
+			#	then add concantenated strings to dictionary
+			if (j==len(names)-1 and i==len(doc.paragraphs)-1):
+				name_with_text[names[j]] = want_str
+				want_str = ""
+			
+			# if loop isnt at end of names[] and current text is new line then increment array index
+			if(j!=len(names)-1 and re.search('[a-zA-Z]',text)==None):
+				print("next name")
+				want_str = ""
+				next_name = True
+
+
 		want_str += text
-		#print("added to "+want_str+"\n")
+		print("added to "+want_str+"\n")
+
+		# increment j if you have reached the next_name
+		if(next_name):
+			j+=1
 
 	for name in name_with_text:
 		print name
+	
 
 	return name_with_text
 		
