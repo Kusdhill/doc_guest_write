@@ -39,7 +39,7 @@ def find_names(doc_object):
 
 		for run in doc_object.paragraphs[i].runs:
 			if(run.bold):
-				if(name_verified(run.text)):
+				if(verify_name(run.text)):
 					cleaned_name = clean_name(run.text)
 					print("cleaned name = "+cleaned_name)
 					names.append(cleaned_name)
@@ -49,8 +49,8 @@ def find_names(doc_object):
 
 
 # Verify that identified bold string is actually a name
-def name_verified(text):
-	print("IN NAME_VERIFIED")
+def verify_name(text):
+	print("IN VERIFY_NAME "+text)
 	print(text)
 	
 	if(not (" " in text)):
@@ -72,9 +72,12 @@ def name_verified(text):
 def clean_name(text):
 	print("cleaning "+text+"\n")
 	last_char = text[-1]
+	print(last_char)
 	print(last_char.isalpha())
+	print(text[0:-1])
 	if(not last_char.isalpha()):
-		return text[0:-2]
+		print("bad return?")
+		return text[0:-1]
 	else:
 		return text
 
