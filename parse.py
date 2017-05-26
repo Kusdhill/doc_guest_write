@@ -86,66 +86,68 @@ def clean_name(text):
 def copy_text(names, doc):
 	name_with_text = {}
 
-	#print(name_with_text)
+	#print(names)
 
 	j = 0
+	all_found = False
 	want_str = ""
 	for i in range(0,len(doc.paragraphs)):
 		line = doc.paragraphs[i]
+
 		text = line.text
 		bold = False
 		next_name = False
 		new_lines = 0
+			
+		#print(i)
+		if(i<len(doc.paragraphs)-1):
+			next_line = doc.paragraphs[i+1]
+			next_text = next_line.text
 
-		print("doc = "+doc.paragraphs[i].text+"\n")
+		want_str+=text
+		#print("text = "+text)
+		#print(want_str+"\n\n\n")
+
+		#print("doc = "+doc.paragraphs[i].text+"\n")
+
+
+		if(all_found and i==len(doc.paragraphs)-1):
+			name_with_text[names[j]] = want_str
+			#print("waow"+str(i))
+
 
 		if(len(line.runs)>=2):
-			if(line.runs[1].bold):
-				bold = True
+			#print("\nfound runs")
+			for k in range(0,len(line.runs)):
+				if(line.runs[k].bold):
+					#print("\nfound bold")
+					bold = True
 
-		if(re.search('[a-zA-Z]',text)==None):
-			print("empty, clear")
-			want_str = ""
-
-		if names[j] in text and bold:
-			print("found name! "+names[j])
-
-			# take previous name followed by concantenated strings, put into dictionary. ex: {Kunal : my text}
-			if(j!=0):
-				print("\n"+names[j-1]+"\n")
+		if(j!=0 and re.search('[a-zA-Z]',text)==None):
+			if(re.search('[a-zA-Z]',next_text)==None):
+				pass
+			else:
 				name_with_text[names[j-1]] = want_str
-				print("cleared want_str")
+				#print(name_with_text[names[j-1]])
+				#print("added, clear")
 				want_str = ""
 
-			# if loop is at end of names[] and loop is at end of doc paragraphs
-			#	then add concantenated strings to dictionary
-			if (j==len(names)-1 and i==len(doc.paragraphs)-1):
-				name_with_text[names[j]] = want_str
-				want_str = ""
-			
-			# if loop isnt at end of names[] and current text is new line then increment array index
-			if(j!=len(names)-1 and re.search('[a-zA-Z]',text)==None):
-				print("next name")
-				want_str = ""
-				next_name = True
+		#print("\nlooking for "+names[j])
+		if names[j] in text and bold:
+			#print("found name! "+names[j])
+			if(j<len(names)-1):
+				j+=1
+			else:
+				#print("found all names")
+				all_found = True
 
-
-		want_str += text
-		print("added to "+want_str+"\n")
-
-		# increment j if you have reached the next_name
-		if(next_name):
-			j+=1
-
-	for name in name_with_text:
-		print name
-	
 
 	return name_with_text
 		
 
 # For each name, create a file, dump the text, and save the file
 def dump_files(filename, names, copied):
+
 
 	path = "./"+filename[0:-5]+"_created_files/"
 
@@ -154,6 +156,7 @@ def dump_files(filename, names, copied):
 
 	os.makedirs(path)
 	for i in range(0, len(names)):
+
 		save_doc = docx.Document()
 		save_doc.add_paragraph(copied[names[i]])
 		save_doc.save(path+names[i]+".docx")
