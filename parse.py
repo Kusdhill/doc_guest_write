@@ -33,12 +33,13 @@ def check_existence(filename):
 # parses file for names of guests
 def find_names(doc_object):
 	names = []
+	next_text = ""
 	for i in range(0, len(doc_object.paragraphs)):
 		#print(doc_object.paragraphs[i].text)
 		#print(len(doc_object.paragraphs[i].runs))
 
 		for run in doc_object.paragraphs[i].runs:
-			print(run.text)
+			# need to get all of bolded line instead of fragmented lines
 			if(run.bold):
 				if(verify_name(run.text)):
 					cleaned_name = clean_name(run.text)
@@ -54,19 +55,22 @@ def find_names(doc_object):
 
 # Verify that identified bold string is actually a name
 def verify_name(text):
-	print("IN VERIFY_NAME "+text)
-	print(text)
+	print("IN VERIFY_NAME: "+text)
 	
 	if(not (" " in text)):
+		print("no space, returning false")
 		return False
 	if(text=="" or len(text)<2):
+		print("empty/small text, returning false")
 		return False
 	else:
 		first_char = text[0]
 		last_char = text[-1]
 	if(not first_char.isupper()):
+		print("first char not upper, returning false")
 		return False
-	if(not (last_char.isalpha() or last_char!="," or last_char!=":" or last_char!=" ")):
+	if(not (last_char.isalpha() or last_char!="," or last_char!=":" or last_char!=" " or last_char!="\"")):
+		print("last char not alpha or , or : or space or \", returning false")
 		return False
 	else:
 		return True
