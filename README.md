@@ -8,3 +8,4 @@ sudo pip install --upgrade -r requirements.txt
 
 Before use:
 ensure every guest has newline between other guests
+ensure name of each guest is bolded
