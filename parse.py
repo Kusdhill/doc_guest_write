@@ -1,4 +1,5 @@
 import docx
+import zipfile
 import sys
 import os
 import re
@@ -71,7 +72,7 @@ def verify_name(text):
 		last_char = text[-1]
 	if(not first_char.isupper()):
 		print("first char not upper, returning false")
-		return False
+		return verify_name(text[1:])
 	if(not (last_char.isalpha() or last_char!="," or last_char!=":" or last_char!=" " or last_char!="\"")):
 		print("last char not alpha or , or : or space or \", returning false")
 		return False
@@ -117,6 +118,7 @@ def clean_name(text):
 
 # put name and text associated with name into dictionary
 def copy_text(names, doc):
+	print("\n\n\n\n\n\n"+"in copy_text---------------------------------------------------------------------"+"\n\n\n\n\n\n")
 	name_with_text = {}
 
 	#print(names)
@@ -139,9 +141,9 @@ def copy_text(names, doc):
 
 		want_str+=text
 		#print("text = "+text)
-		#print(want_str+"\n\n\n")
+		#print("want_str =\n"+want_str+"\n\n\n")
 
-		#print("doc = "+doc.paragraphs[i].text+"\n")
+		print("doc = "+doc.paragraphs[i].text+"\n")
 
 
 		if(all_found and i==len(doc.paragraphs)-1):
@@ -150,10 +152,11 @@ def copy_text(names, doc):
 
 
 		if(len(line.runs)>=2):
-			#print("\nfound runs")
+			print("\nfound runs")
 			for k in range(0,len(line.runs)):
+				print(line.runs[k].text)
 				if(line.runs[k].bold):
-					#print("\nfound bold")
+					print("\nfound bold")
 					bold = True
 
 		if(j!=0 and re.search('[a-zA-Z]',text)==None):
@@ -167,7 +170,7 @@ def copy_text(names, doc):
 
 		#print("\nlooking for "+names[j])
 		if names[j] in text and bold:
-			#print("found name! "+names[j])
+			print("found name! "+names[j])
 			if(j<len(names)-1):
 				j+=1
 			else:
@@ -176,11 +179,27 @@ def copy_text(names, doc):
 
 
 	return name_with_text
-		
+
+
+# get guest images from doc
+def get_images(filename):
+
+
+	stripped_filename = filename[0:-5]
+	path = "./"+stripped_filename
+
+	zip_ref = zipfile.ZipFile(filename, 'r')
+	zip_ref.extractall(path)
+	zip_ref.close()
+
+	extract_path = path+"/word/media"
+
+	for image in os.listdir(extract_path):
+		print(image)
+
 
 # For each name, create a file, dump the text, and save the file
 def dump_files(filename, names, copied):
-
 
 	path = "./"+filename[0:-5]+"_created_files/"
 
@@ -212,6 +231,10 @@ def main():
 	names = find_names(doc)
 	print("copying text")
 	names_with_text = copy_text(names, doc)
+	for key in names_with_text:
+		print("\n\n"+key+"\n"+names_with_text[key]+"\n\n")
+	print("getting images")
+	get_images(filename)
 	print("creating files")
 	dump_files(filename, names, names_with_text)
 	
