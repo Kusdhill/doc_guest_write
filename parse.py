@@ -197,6 +197,8 @@ def get_images(filename):
 	for image in os.listdir(extract_path):
 		print(image)
 
+	shutil.rmtree(path)
+
 
 # For each name, create a file, dump the text, and save the file
 def dump_files(filename, names, copied):
