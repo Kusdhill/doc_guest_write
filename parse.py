@@ -38,20 +38,24 @@ def find_names(doc_object):
 		#print(len(doc_object.paragraphs[i].runs))
 
 		for run in doc_object.paragraphs[i].runs:
+			print(run.text)
 			if(run.bold):
 				if(verify_name(run.text)):
 					cleaned_name = clean_name(run.text)
-					#print("cleaned name = "+cleaned_name)
+					print("cleaned name = "+cleaned_name)
 					names.append(cleaned_name)
 
-	#print(names)
+	print(names)
+
+	mend(names)
+
 	return names
 
 
 # Verify that identified bold string is actually a name
 def verify_name(text):
-	#print("IN VERIFY_NAME "+text)
-	#print(text)
+	print("IN VERIFY_NAME "+text)
+	print(text)
 	
 	if(not (" " in text)):
 		return False
@@ -68,17 +72,39 @@ def verify_name(text):
 		return True
 
 
+# Checks for fragmented names
+def mend(names):
+	print("in mend")
+	for i in range(0,len(names)-2):
+		if " " not in names[i]:
+			join_indeces(names,i,i+1)
+
+
+# Joins fragmented names
+def join_indeces(list_n, left, right):
+	first_name = list_n[left]
+	last_name  = list_n[right]
+	name_string = first_name+" "+last_name
+
+	del list_n[left]
+	del list_n[left]
+	list_n.insert(left, name_string)
+	print("list_n = "+str(list_n))
+
+
 # Cleans name of unnecessary bolded characters
 def clean_name(text):
-	#print("cleaning "+text+"\n")
+	print("cleaning "+text+"\n")
 	last_char = text[-1]
-	#print(last_char)
-	#print(last_char.isalpha())
+	print("last_char = "+last_char)
+	print("is alpha? "+str(last_char.isalpha()))
 	#print(text[0:-1])
 	if(not last_char.isalpha()):
 		#print("bad return?")
-		return text[0:-1]
+		print("re-cleaning "+text[0:-1])
+		return clean_name(text[0:-1])
 	else:
+		print("returning "+text)
 		return text
 
 
