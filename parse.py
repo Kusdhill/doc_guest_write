@@ -33,18 +33,21 @@ def check_existence(filename):
 # parses file for names of guests
 def find_names(doc_object):
 	names = []
-	next_text = ""
+	
 	for i in range(0, len(doc_object.paragraphs)):
+		complete_run = ""
 		#print(doc_object.paragraphs[i].text)
 		#print(len(doc_object.paragraphs[i].runs))
 
 		for run in doc_object.paragraphs[i].runs:
 			# need to get all of bolded line instead of fragmented lines
 			if(run.bold):
-				if(verify_name(run.text)):
-					cleaned_name = clean_name(run.text)
-					print("cleaned name = "+cleaned_name)
-					names.append(cleaned_name)
+				complete_run += run.text
+
+		if(verify_name(complete_run)):
+			cleaned_name = clean_name(complete_run)
+			print("cleaned name = "+cleaned_name+"\n")
+			names.append(cleaned_name)
 
 	print(names)
 
