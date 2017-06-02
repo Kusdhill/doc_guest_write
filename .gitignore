@@ -1,4 +1,7 @@
 # docx files
 *.docx
 
+# guest folders
+guest*/
+
 buglist
