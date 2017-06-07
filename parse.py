@@ -4,6 +4,7 @@ import sys
 import os
 import re
 import shutil
+from docx.shared import Inches
 
 
 # verifies that a given filename has .docx extension
@@ -184,36 +185,54 @@ def copy_text(names, doc):
 # get guest images from doc
 def get_images(filename):
 
-
+	image_locations = []
 	stripped_filename = filename[0:-5]
 	path = "./"+stripped_filename
 
-	zip_ref = zipfile.ZipFile(filename, 'r')
-	zip_ref.extractall(path)
-	zip_ref.close()
+	extract_directory = path+"_images"
 
-	extract_path = path+"/word/media"
+	zip_ref = zipfile.ZipFile(filename, 'r')
+	zip_ref.extractall(extract_directory)
+	zip_ref.close()
+	extract_path = extract_directory+"/word/media"
 
 	for image in os.listdir(extract_path):
-		print(image)
+		image_locations.append(extract_path+"/"+image)
 
-	shutil.rmtree(path)
+	image_locations.sort()
+
+	return image_locations
 
 
-# For each name, create a file, dump the text, and save the file
-def dump_files(filename, names, copied):
+# For each name, create a file, dump the text with images, and save the file
+def dump_files(filename, names, copied, images):
 
 	path = "./"+filename[0:-5]+"_created_files/"
+	all_guest_images = False
 
 	if os.path.exists(path):
 		shutil.rmtree(path)
+
+	if(len(names)==len(images)):
+		all_guest_images = True
 
 	os.makedirs(path)
 	for i in range(0, len(names)):
 
 		save_doc = docx.Document()
 		save_doc.add_paragraph(copied[names[i]])
+		if(all_guest_images):
+			save_doc.add_picture(images[i],width=Inches(1.38), height=Inches(1.38))
 		save_doc.save(path+names[i]+".docx")
+
+
+# Clean created files
+def clean_files(filename):
+	stripped_filename = filename[0:-5]
+	path = "./"+stripped_filename
+	extract_directory = path+"_images"
+
+	shutil.rmtree(extract_directory)
 
 
 def main():
@@ -236,9 +255,11 @@ def main():
 	for key in names_with_text:
 		print("\n\n"+key+"\n"+names_with_text[key]+"\n\n")
 	print("getting images")
-	get_images(filename)
+	guest_images = get_images(filename)
 	print("creating files")
-	dump_files(filename, names, names_with_text)
+	dump_files(filename, names, names_with_text, guest_images)
+	print("cleaning created files")
+	clean_files(filename)
 	
 
 
