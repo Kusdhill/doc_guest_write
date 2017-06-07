@@ -140,7 +140,7 @@ def copy_text(names, doc):
 			next_line = doc.paragraphs[i+1]
 			next_text = next_line.text
 
-		want_str+=text
+		want_str+=text+"*"
 		#print("text = "+text)
 		#print("want_str =\n"+want_str+"\n\n\n")
 
@@ -261,7 +261,6 @@ def main():
 	print("cleaning created files")
 	clean_files(filename)
 	
-
 
 if __name__ == '__main__':
 	main()
