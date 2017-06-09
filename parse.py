@@ -121,37 +121,37 @@ def clean_name(text):
 def copy_text(names, doc):
 	print("\n\n\n\n\n\n"+"in copy_text---------------------------------------------------------------------"+"\n\n\n\n\n\n")
 	name_with_text = {}
+	text_list = []
 
 	#print(names)
 
 	j = 0
 	all_found = False
-	want_str = ""
 	for i in range(0,len(doc.paragraphs)):
 		line = doc.paragraphs[i]
-
 		text = line.text
 		bold = False
 		next_name = False
 		new_lines = 0
 			
-		#print(i)
+		# looking forward
 		if(i<len(doc.paragraphs)-1):
 			next_line = doc.paragraphs[i+1]
 			next_text = next_line.text
 
-		want_str+=text+"*"
-		#print("text = "+text)
-		#print("want_str =\n"+want_str+"\n\n\n")
+
+		text_list.append(text)
+		text+="*"
 
 		print("doc = "+doc.paragraphs[i].text+"\n")
 
-
+		# if all names have been found and parser is at the end of the doc
+		# add text to the dictionary
 		if(all_found and i==len(doc.paragraphs)-1):
-			name_with_text[names[j]] = want_str
+			name_with_text[names[j]] = text_list
 			#print("waow"+str(i))
 
-
+		# if there is a bold run, set bold to true
 		if(len(line.runs)>=2):
 			print("\nfound runs")
 			for k in range(0,len(line.runs)):
@@ -164,12 +164,15 @@ def copy_text(names, doc):
 			if(re.search('[a-zA-Z]',next_text)==None):
 				pass
 			else:
-				name_with_text[names[j-1]] = want_str
+				print("append text_list = "+str(text_list))
+
+				name_with_text[names[j-1]] = text_list
 				#print(name_with_text[names[j-1]])
 				#print("added, clear")
-				want_str = ""
+				text_list = []
 
-		#print("\nlooking for "+names[j])
+		# if text is bold and it matches a name, increment j (pointer to lines)
+		# if end of names list has been reached and name is found then set all_found to true
 		if names[j] in text and bold:
 			print("found name! "+names[j])
 			if(j<len(names)-1):
@@ -178,7 +181,7 @@ def copy_text(names, doc):
 				#print("found all names")
 				all_found = True
 
-
+	#print("text_list = "+str(text_list))
 	return name_with_text
 
 
@@ -207,6 +210,9 @@ def get_images(filename):
 # For each name, create a file, dump the text with images, and save the file
 def dump_files(filename, names, copied, images):
 
+	print(copied)
+
+	asterisk = "*"
 	path = "./"+filename[0:-5]+"_created_files/"
 	all_guest_images = False
 
@@ -218,9 +224,14 @@ def dump_files(filename, names, copied, images):
 
 	os.makedirs(path)
 	for i in range(0, len(names)):
+		entry = copied[names[i]]
+
+		print("entry = ")
+		print(entry)
 
 		save_doc = docx.Document()
-		save_doc.add_paragraph(copied[names[i]])
+		
+		save_doc.add_paragraph(entry)
 		if(all_guest_images):
 			save_doc.add_picture(images[i],width=Inches(1.38), height=Inches(1.38))
 		save_doc.save(path+names[i]+".docx")
@@ -252,8 +263,6 @@ def main():
 	names = find_names(doc)
 	print("copying text")
 	names_with_text = copy_text(names, doc)
-	for key in names_with_text:
-		print("\n\n"+key+"\n"+names_with_text[key]+"\n\n")
 	print("getting images")
 	guest_images = get_images(filename)
 	print("creating files")
