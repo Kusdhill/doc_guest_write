@@ -168,6 +168,7 @@ def get_images(filename):
 	image_locations.sort()
 	return image_locations
 
+
 # finds if a name is contained in a string
 def contains_name(text, names):
 	for name in names:
@@ -177,6 +178,7 @@ def contains_name(text, names):
 	return False
 
 
+# if beginning entry doesnt contain name or is empty, entry is cut off list
 def clean_entry_list(entry_list, name_list):
 	first_entry = entry_list[0]
 
@@ -264,7 +266,7 @@ def main():
 	print("creating files")
 	dump_files(filename, names, names_with_text, guest_images)
 	print("cleaning created files")
-	#clean_files(filename)
+	clean_files(filename)
 	print("opening results")
 	open_directory(filename)
 
