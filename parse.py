@@ -4,6 +4,7 @@ import sys
 import os
 import re
 import shutil
+import subprocess
 from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
@@ -165,7 +166,6 @@ def get_images(filename):
 		image_locations.append(extract_path+"/"+image)
 
 	image_locations.sort()
-
 	return image_locations
 
 
@@ -215,6 +215,12 @@ def clean_files(filename):
 	shutil.rmtree(extract_directory)
 
 
+# Opens results folder
+def open_directory(filename):
+	directory_path = "./"+filename[0:-5]+"_created_files/"
+	subprocess.call(["open", "-R", directory_path])
+
+
 def main():
 	print("checking command line arguments")
 	if len(sys.argv)!=2:
@@ -238,7 +244,8 @@ def main():
 	dump_files(filename, names, names_with_text, guest_images)
 	print("cleaning created files")
 	clean_files(filename)
-
+	print("opening results")
+	open_directory(filename)
 
 
 if __name__ == '__main__':
