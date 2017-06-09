@@ -163,10 +163,21 @@ def get_images(filename):
 	extract_path = extract_directory+"/word/media"
 
 	for image in os.listdir(extract_path):
+		print(image)
 		image_locations.append(extract_path+"/"+image)
 
 	image_locations.sort()
+	print(image_locations)
 	return image_locations
+
+
+def clean_entry_list(entry_list):
+	if entry_list[0]=="":
+		del entry_list[0]
+		return clean_entry_list(entry_list)
+	else:
+		return entry_list
+
 
 
 # For each name, create a file, dump the text with images, and save the file
@@ -188,7 +199,10 @@ def dump_files(filename, names, copied, images):
 		image_added = False
 		save_doc = docx.Document()
 
+		entry = clean_entry_list(entry)
+
 		for j in range(0,len(entry)):
+			# first line
 			if(j==0):
 				para = save_doc.add_paragraph("")
 				run = para.add_run(entry[j])
@@ -243,7 +257,7 @@ def main():
 	print("creating files")
 	dump_files(filename, names, names_with_text, guest_images)
 	print("cleaning created files")
-	clean_files(filename)
+	#clean_files(filename)
 	print("opening results")
 	open_directory(filename)
 
