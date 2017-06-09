@@ -4,4 +4,8 @@
 # guest folders
 guest*/
 
+# bug list
 buglist
+
+# macOS files
+.DS_Store
