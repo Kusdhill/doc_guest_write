@@ -226,12 +226,27 @@ def dump_files(filename, names, copied, images):
 	for i in range(0, len(names)):
 		entry = copied[names[i]]
 
-		print("entry = ")
-		print(entry)
+
 
 		save_doc = docx.Document()
 		
-		save_doc.add_paragraph(entry)
+
+		for j in range(0,len(entry)):
+			print(entry[j])
+
+			
+
+			if(entry[j]==""):
+				print("nothing")
+
+			if(j==0):
+				para = save_doc.add_paragraph("")
+				run = para.add_run(entry[j])
+				run.bold = True
+			else:
+				if entry[j]!="":
+					save_doc.add_paragraph(entry[j], style = 'List Bullet')
+
 		if(all_guest_images):
 			save_doc.add_picture(images[i],width=Inches(1.38), height=Inches(1.38))
 		save_doc.save(path+names[i]+".docx")
