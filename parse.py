@@ -145,6 +145,9 @@ def copy_text(names, doc):
 			else:
 				all_found = True
 
+	for name in name_with_text:
+		print(name)
+
 	return name_with_text
 
 
@@ -192,7 +195,6 @@ def clean_entry_list(entry_list, name_list):
 # For each name, create a file, dump the text with images, and save the file
 def dump_files(filename, names, copied, images):
 
-	asterisk = "*"
 	path = "./"+filename[0:-5]+"_created_files/"
 	all_guest_images = False
 
