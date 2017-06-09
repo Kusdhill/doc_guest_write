@@ -163,21 +163,28 @@ def get_images(filename):
 	extract_path = extract_directory+"/word/media"
 
 	for image in os.listdir(extract_path):
-		print(image)
 		image_locations.append(extract_path+"/"+image)
 
 	image_locations.sort()
-	print(image_locations)
 	return image_locations
 
+# finds if a name is contained in a string
+def contains_name(text, names):
+	for name in names:
+		if name in text:
+			return True
 
-def clean_entry_list(entry_list):
-	if entry_list[0]=="":
+	return False
+
+
+def clean_entry_list(entry_list, name_list):
+	first_entry = entry_list[0]
+
+	if first_entry=="" or not contains_name(first_entry,name_list):
 		del entry_list[0]
-		return clean_entry_list(entry_list)
+		return clean_entry_list(entry_list, name_list)
 	else:
 		return entry_list
-
 
 
 # For each name, create a file, dump the text with images, and save the file
@@ -199,7 +206,7 @@ def dump_files(filename, names, copied, images):
 		image_added = False
 		save_doc = docx.Document()
 
-		entry = clean_entry_list(entry)
+		entry = clean_entry_list(entry,names)
 
 		for j in range(0,len(entry)):
 			# first line
