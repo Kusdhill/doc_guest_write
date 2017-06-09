@@ -9,3 +9,6 @@ buglist
 
 # macOS files
 .DS_Store
+
+# xml
+*.xml
