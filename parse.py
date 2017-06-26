@@ -7,6 +7,9 @@ import shutil
 import subprocess
 from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from lxml import etree
+from lxml import objectify
+from StringIO import StringIO
 
 
 # verifies that a given filename has .docx extension
@@ -150,6 +153,25 @@ def copy_text(names, doc):
 
 	return name_with_text
 
+# parses xml for images
+def parse_xml(filename):
+	print("in parse xml")
+
+	stripped_filename = filename[0:-5]
+	path = "./"+stripped_filename
+
+	xml_file = path+"_images"+"/word/document.xml"
+
+	f = open(xml_file)
+	xml = f.read()
+	f.close()
+
+	tree = etree.parse(StringIO(xml))
+	context = etree.iterparse(StringIO(xml))
+
+	for elem in context:
+		print(elem)
+
 
 # get guest images from doc
 def get_images(filename):
@@ -194,6 +216,7 @@ def clean_entry_list(entry_list, name_list):
 
 # For each name, create a file, dump the text with images, and save the file
 def dump_files(filename, names, copied, images):
+	print(images)
 
 	path = "./"+filename[0:-5]+"_created_files/"
 	all_guest_images = False
@@ -264,13 +287,14 @@ def main():
 	print("copying text")
 	names_with_text = copy_text(names, doc)
 	print("getting images")
+	parse_xml(filename)
 	guest_images = get_images(filename)
 	print("creating files")
 	dump_files(filename, names, names_with_text, guest_images)
 	print("cleaning created files")
-	clean_files(filename)
+	#clean_files(filename)
 	print("opening results")
-	open_directory(filename)
+	#open_directory(filename)
 
 
 if __name__ == '__main__':
