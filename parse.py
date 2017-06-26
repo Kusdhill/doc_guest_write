@@ -157,20 +157,31 @@ def copy_text(names, doc):
 def parse_xml(filename):
 	print("in parse xml")
 
+	image_count = 0
+
 	stripped_filename = filename[0:-5]
 	path = "./"+stripped_filename
 
 	xml_file = path+"_images"+"/word/document.xml"
+	rels_file = path+"_images"+"/word/_rels/document.xml.rels"
 
 	f = open(xml_file)
 	xml = f.read()
 	f.close()
 
+	o = open(rels_file)
+	rels_xml = o.read()
+	o.close
+
 	tree = etree.parse(StringIO(xml))
 	context = etree.iterparse(StringIO(xml))
 
-	for elem in context:
-		print(elem)
+	for action, elem in context:
+		print(elem.tag)
+		if "graphicData" in elem.tag:
+			image_count += 1
+
+	print(str(image_count)+" images in file")
 
 
 # get guest images from doc
