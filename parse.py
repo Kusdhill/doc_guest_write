@@ -192,8 +192,6 @@ def parse_xml(filename, names):
 		#print(elem.attrib)
 		tag = str(elem.tag)
 		if "embed" in str(elem.attrib):
-			#print(tag)
-			#print(elem.attrib)
 			graphic_found = True
 			image_count += 1
 		if tag[-1]=="t" and tag[-2]=="}":
