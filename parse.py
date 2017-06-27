@@ -9,6 +9,7 @@ from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from lxml import etree
 from lxml import objectify
+import xml.etree.ElementTree as ET
 from StringIO import StringIO
 
 
@@ -153,11 +154,15 @@ def copy_text(names, doc):
 
 	return name_with_text
 
+
 # parses xml for images
-def parse_xml(filename):
-	print("in parse xml")
+def parse_xml(filename, names):
+	print("in parse xml\n")
+	#print(names)
 
 	image_count = 0
+	image_list = []
+	i = 0
 
 	stripped_filename = filename[0:-5]
 	path = "./"+stripped_filename
@@ -176,13 +181,39 @@ def parse_xml(filename):
 	tree = etree.parse(StringIO(xml))
 	context = etree.iterparse(StringIO(xml))
 
+
+
+
+	# look into xml rels file
+	# check original xml for reference ID's
+	# link reference ID's to images from rels file
+	# put image into document
 	for action, elem in context:
-		print(elem.tag)
-		if "graphicData" in elem.tag:
+		#print(elem.attrib)
+		tag = str(elem.tag)
+		if "embed" in str(elem.attrib):
+			#print(tag)
+			#print(elem.attrib)
+			graphic_found = True
 			image_count += 1
+		if tag[-1]=="t" and tag[-2]=="}":
+			print(tag+"\n "+str(elem.attrib)+elem.text+"\n\n\n")
+			
+		#if name in str(elem.attrib)
+		#if(graphic_found and name_found):
+				# put somewhere
+		
+
+
 
 	print(str(image_count)+" images in file")
 
+	if image_count==len(names):
+		print("every guest has an image")
+	else:
+		print("no image for every guest")
+
+	print("\n")
 
 # get guest images from doc
 def get_images(filename):
@@ -298,7 +329,7 @@ def main():
 	print("copying text")
 	names_with_text = copy_text(names, doc)
 	print("getting images")
-	parse_xml(filename)
+	parse_xml(filename, names)
 	guest_images = get_images(filename)
 	print("creating files")
 	dump_files(filename, names, names_with_text, guest_images)
