@@ -152,6 +152,7 @@ def copy_text(names, doc):
 
 
 # parses file for images
+# find new implementation, perhaps rtf
 def parse_images(filename, names):
 	print("in parse images\n")
 
