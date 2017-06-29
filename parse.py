@@ -155,6 +155,12 @@ def copy_text(names, doc):
 # find new implementation, perhaps rtf
 def parse_images(filename, names):
 	print("in parse images\n")
+
+	has_image = {}
+
+	for i in range(0, len(names)):
+		has_image[names[i]] = False
+
 	stripped_filename = filename[0:-5]
 	path = "./"+stripped_filename+".rtf"
 
@@ -172,9 +178,23 @@ def parse_images(filename, names):
 
 	# modify this so that partial names can be found
 	for name in names:
-		for line in new_text:
-			if name in line:
+		split_name = name.split(" ")
+		name_found = False
+		image_found = False
+		for line,full_line in zip(new_text,text):
+			for i in range(0, len(split_name)):
+				if i==0 and split_name[0] in line:
+					print(line)
+					name_found = True
+					del(split_name[1])
+
+			if "picture" in full_line:
 				print(line)
+				image_found = True
+
+			if name_found and image_found:
+				has_image[name] = True
+	print(has_image)
 
 # get guest images from doc
 def get_images(filename):
