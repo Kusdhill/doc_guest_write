@@ -217,8 +217,8 @@ def parse_images(filename, names):
 	print(has_image)
 	"""
 
-# extract word file, to get source xml
-def extract_word(filename):
+# unzip word file to get source xml
+def unzip_word(filename):
 	stripped_filename = filename[0:-5]
 	path = "./"+stripped_filename
 
@@ -343,8 +343,8 @@ def main():
 	names = find_names(doc)
 	print("copying text")
 	names_with_text = copy_text(names, doc)
-	print("extracting word file")
-	extract_word(filename)
+	print("unzipping word file")
+	unzip_word(filename)
 	print("getting images")
 	parse_images(filename, names)
 	guest_images = get_images(filename)
