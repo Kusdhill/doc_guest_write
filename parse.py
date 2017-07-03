@@ -158,10 +158,11 @@ def copy_text(names, doc):
 def parse_images(filename, names):
 	print("in parse images\n")
 
-	has_image = {}
+	guest_image_info = {}
 
 	for i in range(0, len(names)):
-		has_image[names[i]] = False
+		guest_image_info[names[i]] = [False,""]
+
 
 	stripped_filename = filename[0:-5]
 	path = "./"+stripped_filename+"_images/word/document.xml"
@@ -183,14 +184,17 @@ def parse_images(filename, names):
 		image_found = False
 		bold_found = False
 	"""
-
-	for i in range(0,len(text)):
-		image_found = False
+	image_found = False
+	for i in range(0,len(text)):	
 		line = text[i]
+		if i>0:
+			prev_line = text[i-1]
 		if "r:embed=" in line:
 			image_found = True
 			print(line)
-		#if image_found:
+		if image_found and "</w:t>" in line and "</w:rPr>" in prev_line:
+			print(line)
+			image_found = False
 
 			
 
