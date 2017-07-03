@@ -177,49 +177,20 @@ def parse_images(filename, names):
 
 	text = open(output_xml_path).readlines()
 
-	"""
-	for name in names:
-		split_name = name.split(" ")
-		name_found = False
+	for j in range(0,len(names)):
+		split_name = names[j].split(" ")
 		image_found = False
-		bold_found = False
-	"""
-	image_found = False
-	for i in range(0,len(text)):	
-		line = text[i]
-		if i>0:
-			prev_line = text[i-1]
-		if "r:embed=" in line:
-			image_found = True
-			print(line)
-		if image_found and "</w:t>" in line and "</w:rPr>" in prev_line:
-			print(line)
-			image_found = False
-
-			
-
-
-	"""
-	# modify this so that partial names can be found
-	for name in names:
-		split_name = name.split(" ")
-		name_found = False
-		image_found = False
-		for line,full_line in zip(new_text,text):
-			for i in range(0, len(split_name)):
-				if i==0 and split_name[0] in line:
-					print(line)
-					name_found = True
-					del(split_name[1])
-
-			if "picture" in full_line:
-				print(line)
+		for i in range(0,len(text)):
+			line = text[i]
+			if i>0:
+				prev_line = text[i-1]
+			if "r:embed=" in line:
 				image_found = True
+				print(line)
+			if image_found and "</w:t>" in line and "</w:rPr>" in prev_line:
+				print(line)
+				image_found = False
 
-			if name_found and image_found:
-				has_image[name] = True
-	print(has_image)
-	"""
 
 # unzip word file to get source xml
 def unzip_word(filename):
@@ -231,6 +202,7 @@ def unzip_word(filename):
 	zip_ref = zipfile.ZipFile(filename, 'r')
 	zip_ref.extractall(extract_directory)
 	zip_ref.close()
+
 
 # get guest images from doc
 def get_images(filename):
