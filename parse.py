@@ -165,34 +165,34 @@ def parse_images(filename, names):
 
 	stripped_filename = filename[0:-5]
 	path = "./"+stripped_filename+"_images/word/document.xml"
-	output_xml_path = "./output.xml"
+	output_xml_path = "./"+stripped_filename+"_output.xml"
 
 	raw_xml = xml.dom.minidom.parse(path)
 	xml_string = raw_xml.toprettyxml()
 
-	output_xml = open("output.xml", "w")
+	output_xml = open(output_xml_path, "w")
 	output_xml.write(xml_string.encode('utf8'))
 	output_xml.close()
 
 	text = open(output_xml_path).readlines()
 
+	"""
 	for name in names:
 		split_name = name.split(" ")
 		name_found = False
 		image_found = False
 		bold_found = False
+	"""
 
-		for i in range(0,len(text)):
-			line = text[i]
-			if "<w:b/>" in line:
-				bold_found = True
-			for j in range(0,len(split_name)):
-				searching_name = "<w:t>"+str(split_name[0])
-				if(name_found==False):
-					if j==0 and searching_name in line:
-						print(line)
-						name_found = True
-						del(split_name[1])
+	for i in range(0,len(text)):
+		image_found = False
+		line = text[i]
+		if "r:embed=" in line:
+			image_found = True
+			print(line)
+		#if image_found:
+
+			
 
 
 	"""
@@ -216,6 +216,17 @@ def parse_images(filename, names):
 				has_image[name] = True
 	print(has_image)
 	"""
+
+# extract word file, to get source xml
+def extract_word(filename):
+	stripped_filename = filename[0:-5]
+	path = "./"+stripped_filename
+
+	extract_directory = path+"_images"
+
+	zip_ref = zipfile.ZipFile(filename, 'r')
+	zip_ref.extractall(extract_directory)
+	zip_ref.close()
 
 # get guest images from doc
 def get_images(filename):
@@ -303,7 +314,7 @@ def clean_files(filename):
 	stripped_filename = filename[0:-5]
 	path = "./"+stripped_filename
 	extract_directory = path+"_images"
-	output_xml = "./output.xml"
+	output_xml = "./"+stripped_filename+"_output.xml"
 
 	shutil.rmtree(extract_directory)
 	os.remove(output_xml)
@@ -332,6 +343,8 @@ def main():
 	names = find_names(doc)
 	print("copying text")
 	names_with_text = copy_text(names, doc)
+	print("extracting word file")
+	extract_word(filename)
 	print("getting images")
 	parse_images(filename, names)
 	guest_images = get_images(filename)
