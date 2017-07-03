@@ -7,6 +7,7 @@ import shutil
 import subprocess
 from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+import xml.dom.minidom
 
 
 # verifies that a given filename has .docx extension
@@ -152,7 +153,8 @@ def copy_text(names, doc):
 
 
 # parses file for images
-# find new implementation, perhaps rtf
+# changing back to xml implementation
+# reading it line by line as string instead of as xml
 def parse_images(filename, names):
 	print("in parse images\n")
 
@@ -162,20 +164,38 @@ def parse_images(filename, names):
 		has_image[names[i]] = False
 
 	stripped_filename = filename[0:-5]
-	path = "./"+stripped_filename+".rtf"
+	path = "./"+stripped_filename+"_images/word/document.xml"
+	output_xml_path = "./output.xml"
 
-	text = open(path).read()
-	split_text = text.split("}")
-	good_text = ""
+	raw_xml = xml.dom.minidom.parse(path)
+	xml_string = raw_xml.toprettyxml()
 
-	for line in split_text:
-		if "\\b\\" in line:
-			if "f31" in line:
-				good_text += line
-				#print("\n"+line+"\n")
+	output_xml = open("output.xml", "w")
+	output_xml.write(xml_string.encode('utf8'))
+	output_xml.close()
 
-	new_text = good_text.split("f31")
+	text = open(output_xml_path).readlines()
 
+	for name in names:
+		split_name = name.split(" ")
+		name_found = False
+		image_found = False
+		bold_found = False
+
+		for i in range(0,len(text)):
+			line = text[i]
+			if "<w:b/>" in line:
+				bold_found = True
+			for j in range(0,len(split_name)):
+				searching_name = "<w:t>"+str(split_name[0])
+				if(name_found==False):
+					if j==0 and searching_name in line:
+						print(line)
+						name_found = True
+						del(split_name[1])
+
+
+	"""
 	# modify this so that partial names can be found
 	for name in names:
 		split_name = name.split(" ")
@@ -195,6 +215,7 @@ def parse_images(filename, names):
 			if name_found and image_found:
 				has_image[name] = True
 	print(has_image)
+	"""
 
 # get guest images from doc
 def get_images(filename):
@@ -282,8 +303,10 @@ def clean_files(filename):
 	stripped_filename = filename[0:-5]
 	path = "./"+stripped_filename
 	extract_directory = path+"_images"
+	output_xml = "./output.xml"
 
 	shutil.rmtree(extract_directory)
+	os.remove(output_xml)
 
 
 # Opens results folder
